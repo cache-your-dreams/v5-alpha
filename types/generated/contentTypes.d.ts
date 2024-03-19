@@ -694,6 +694,64 @@ export interface PluginI18NLocale extends Schema.CollectionType {
   };
 }
 
+export interface ApiAddressAddress extends Schema.CollectionType {
+  collectionName: 'addresses';
+  info: {
+    singularName: 'address';
+    pluralName: 'addresses';
+    displayName: 'Address';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  pluginOptions: {
+    i18n: {
+      localized: true;
+    };
+  };
+  attributes: {
+    Name: Attribute.String &
+      Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    postcodes: Attribute.Relation<'manyToMany', 'api::postcode.postcode'>;
+    createdAt: Attribute.DateTime;
+    updatedAt: Attribute.DateTime;
+    publishedAt: Attribute.DateTime;
+    createdBy: Attribute.Relation<'oneToOne', 'admin::user'> &
+      Attribute.Private;
+    updatedBy: Attribute.Relation<'oneToOne', 'admin::user'> &
+      Attribute.Private;
+    locale: Attribute.String;
+  };
+}
+
+export interface ApiPostcodePostcode extends Schema.CollectionType {
+  collectionName: 'postcodes';
+  info: {
+    singularName: 'postcode';
+    pluralName: 'postcodes';
+    displayName: 'Postcode';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    Postcode: Attribute.BigInteger;
+    addresses: Attribute.Relation<'manyToMany', 'api::address.address'>;
+    createdAt: Attribute.DateTime;
+    updatedAt: Attribute.DateTime;
+    publishedAt: Attribute.DateTime;
+    createdBy: Attribute.Relation<'oneToOne', 'admin::user'> &
+      Attribute.Private;
+    updatedBy: Attribute.Relation<'oneToOne', 'admin::user'> &
+      Attribute.Private;
+    locale: Attribute.String;
+  };
+}
+
 declare module '@strapi/types' {
   export module Shared {
     export interface ContentTypes {
@@ -712,6 +770,8 @@ declare module '@strapi/types' {
       'plugin::users-permissions.role': PluginUsersPermissionsRole;
       'plugin::users-permissions.user': PluginUsersPermissionsUser;
       'plugin::i18n.locale': PluginI18NLocale;
+      'api::address.address': ApiAddressAddress;
+      'api::postcode.postcode': ApiPostcodePostcode;
     }
   }
 }
